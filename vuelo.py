@@ -66,3 +66,5 @@ class Vuelo:
         self.__fecha_vuelo = fecha_vuelo
 
     # método destructor no es necesario definirlo
+
+    

@@ -5,7 +5,7 @@ from datetime import datetime as fecha
 class Usuario:
 
     # método constructor
-    def __init__(self, id, nombres, apellidos, fecha_nacimiento, edad) -> None:
+    def __init__(self, id=1, nombres='Pepito', apellidos='Pérez', fecha_nacimiento='01.01.2000', edad=24) -> None:
         self.__id = id
         self.__nombres = nombres
         self.__apellidos = apellidos
@@ -34,7 +34,7 @@ class Usuario:
                     apellidos = {self.__apellidos}
                     fecha nacimiento = {self.__fecha_nacimiento}
                     edad = {self.__edad}
-                    vuelo = No adquirido
+                    vuelo = Aún no adquirido
                     ''' 
     
     # métodos get y set()
@@ -87,3 +87,22 @@ class Usuario:
         self.__vuelo = vuelo
 
     # método destructor no es necesario definirlo
+
+    # métodos mios
+
+    
+
+if __name__ == '__main__':
+    # pruebo método get
+
+    usuario_1 = Usuario(id = 2, nombres = 'Camilo')
+
+    usuario_1.apellidos = 'David'
+    # apellido_modificado = usuario_1.apellidos/
+    print('\n',usuario_1.apellidos)
+    print(usuario_1.id)
+    print(usuario_1.nombres)
+    print(usuario_1.edad)
+    print(usuario_1.fecha_nacimiento)
+    
+    print(usuario_1)
