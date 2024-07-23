@@ -1,17 +1,31 @@
 
 # importo datetime para las fechas
-from datetime import datetime as fecha
+from datetime import datetime as fecha, date
+# _____________________________________________________________________________________
 
 class Usuario:
+# _____________________________________________________________________________________
 
     # método constructor
     def __init__(self, id=1, nombres='Pepito', apellidos='Pérez', fecha_nacimiento='01.01.2000', edad=24) -> None:
         self.__id = id
         self.__nombres = nombres
         self.__apellidos = apellidos
-        self.__fecha_nacimiento = fecha_nacimiento
+
+        # para el atributo fecha_nacimiento, pueden ocurrir 2 casos:
+        # sea de tipo str, convierto tipo str a tipo datetime
+        if isinstance(fecha_nacimiento, str):
+            self.__fecha_nacimiento = fecha.strptime(fecha_nacimiento, "%d-%m-%Y").date()
+        # si es de tipo datetime, no hago ninguna conversión 
+        elif isinstance(fecha_nacimiento, date):
+            self.__fecha_nacimiento = fecha_nacimiento
+        else:
+            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
+        
         self.__edad = edad
         self.__vuelo = None
+
+# _____________________________________________________________________________________
 
     # método __str__()
     def __str__(self) -> str:
@@ -36,7 +50,9 @@ class Usuario:
                     edad = {self.__edad}
                     vuelo = Aún no adquirido
                     ''' 
-    
+        
+# _____________________________________________________________________________________
+
     # métodos get y set()
     @property
     def id(self):
@@ -90,7 +106,7 @@ class Usuario:
 
     # métodos mios
 
-    
+# _____________________________________________________________________________________
 
 if __name__ == '__main__':
     # pruebo método get

@@ -1,6 +1,7 @@
 
 # importo datetime para las fechas
 from datetime import datetime as fecha
+# _____________________________________________________________________________________
 
 class Vuelo:
 
@@ -12,6 +13,7 @@ class Vuelo:
         self.__clase = clase
         self.__fecha_vuelo = fecha_vuelo
 
+# _____________________________________________________________________________________
 
     # método __str__
     def __str__(self):
@@ -23,6 +25,7 @@ class Vuelo:
                 Clase = {self.__clase}
                 Fecha vuelo = {self.__fecha_vuelo}
                 '''
+# _____________________________________________________________________________________
 
     # métodos get() y set()
     @property
@@ -66,5 +69,3 @@ class Vuelo:
         self.__fecha_vuelo = fecha_vuelo
 
     # método destructor no es necesario definirlo
-
-    
