@@ -7,6 +7,11 @@ import archivo_texto
 
 # _____________________________________________________________________________________
 
+# Definimos la constante para el formato de fecha al inicio del archivo
+FECHA_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+# _____________________________________________________________________________________
+
 class Aerolinea:
 
     # método constructor
@@ -22,6 +27,31 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
+    # el siguiente método solo se encarga de crear un objeto usuario, con la validación de que sea mayor de 18, y 
+    # la cédula no se repita con la de un usuario en la lista de usuarios
+    def crear_usuario(self) -> Usuario:
+
+        print('\n------Usuario a Crear -------')
+        id = ingresar_cedula_valida()
+        usuario = self.buscar_usuario(id)
+
+        if usuario == None:
+            fecha_nacimiento = ingresar_fecha_nacimiento_valida()
+            edad = calcular_edad(fecha_nacimiento)
+            if edad >= 18:
+                nombres = input('\nDime los nombres: ')
+                apellidos = input('Dime los apellidos: ')
+            else:
+                print(f'\nTu edad es: {edad}, debes ser mayor de edad')
+                return None
+        else:
+            print(f'\nUsuario con cédula: {id}, ya está registrado: \n{usuario}')
+            return None
+        
+        # creo objeto
+        usuario = Usuario(id,nombres, apellidos, fecha_nacimiento, edad)
+        return usuario
+# _____________________________________________________________________________________
     # métodos de instancia
 
     # función buscar_usuario, lo busca por la cédula si lo encuentra retorna el objeto usuario, sino None
@@ -50,121 +80,92 @@ class Aerolinea:
 
     # función para consultar un usuario
     def mostrar_usuario(self):
-        if not self.usuarios:
-            print('\nNo hay usuarios registrados')
+
+        print('\n-------- Usuario a Buscar---------')
+        cedula = ingresar_cedula_valida()
+        usuario = self.buscar_usuario(cedula)
+        if usuario != None:
+            print(f'\nUsuario encontrado: {usuario}')
         else:
-            print('\n-------- Usuario a Buscar---------')
-            cedula = ingresar_cedula_valida()
-            usuario = self.buscar_usuario(cedula)
-            if usuario != None:
-                print(f'\nUsuario encontrado: {usuario}')
-            else:
-                print(f'\nEl usuario con cédula: {cedula}, no está registrado')
+            print(f'\nEl usuario con cédula: {cedula}, no está registrado')
 
 # _____________________________________________________________________________________
 
     # función para mostrar usuarios
     def mostrar_usuarios(self):
 
-        if not self.usuarios:
-            print('\nNo hay usuarios registrados')
-        else:
-            print('\n----------- Usuarios registrados -----------')
-            for i, usuario in enumerate(self.usuarios):
-                print(f'Usuario # {i+1}: {usuario}' )
+        print('\n----------- Usuarios registrados -----------')
+        for i, usuario in enumerate(self.usuarios):
+            print(f'Usuario # {i+1}: {usuario}' )
 
 # _____________________________________________________________________________________
 
     # añade el usuario en la lista usuarios
     def registrar_usuario(self):
 
-        usuario = crear_usuario()
-
         print('\n------Proceso de Registro -------')
 
-        # si no lo encontró en la lista de usuarios
-        if self.buscar_usuario(usuario.id) is None:
-            
-            # verifico que sea mayor de edad
-            if usuario.edad >= 18: # si es mayor de edad
+        usuario = self.crear_usuario()
 
-                # añado el usuario en la lista de usuarios
-                self.usuarios.append(usuario)
+        # verifico que el usuario si se pudo crear
+        if usuario != None: 
 
-                formato = "%Y-%m-%d %H:%M:%S"
-                # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
-                fecha_actual = convertir_str_a_datetime(fecha.now().strftime(formato))
+            # añado el usuario en la lista de usuarios
+            self.usuarios.append(usuario)
 
-                # función para adicionar información fichero reglog.txt, le paso la fecha actual
-                archivo_texto.adicionar_info_reglog(usuario, fecha_actual)
+            # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+            fecha_actual = convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
 
-                # confirmo que el usuario se registró
-                print(f'''
-                    el usuario se ha registrado exitosamente:
-                    {usuario}
-                ''')
-            else:
-                print(f'Tu edad es: {usuario.edad}, debes ser mayor de edad para registrarte')
-                
-        else: # muestro el usuario en la lista
-            print(f''' 
-                EL usuario con cédula: "{usuario.edula}" ya se encuentra registrado
-                {self.buscar_usuario(usuario.id)}
+            # función para adicionar información fichero reglog.txt, le paso la fecha actual
+            archivo_texto.adicionar_info_reglog(usuario, fecha_actual)
+
+            # confirmo que el usuario se registró
+            print(f'''
+                el usuario se ha registrado exitosamente:
+                {usuario}
             ''')
 
 # _____________________________________________________________________________________
 
     def actualizar_usuario(self):
 
-        # si no hay usuarios registrados aún
-        if not self.usuarios:
-            print('\nNo se encuentra usuarios registrados')
-        else:
-            # muestro los usuarios que están registrados hasta el momento
-            self.mostrar_usuarios()
+        # muestro los usuarios que están registrados hasta el momento
+        self.mostrar_usuarios()
             
-            print('\nIngrese la cédula con que aparece registrado: ')
-            cedula_antigua = ingresar_cedula_valida()
-            pos = self.encontrar_posicion_usuario(cedula_antigua)
+        print('\nIngrese la cédula con que aparece registrado: ')
+        cedula_antigua = ingresar_cedula_valida()
+        pos = self.encontrar_posicion_usuario(cedula_antigua)
 
-            # si está registrado
-            if pos != -1:
-                print(f'\nUsuario a actualizar: {self.usuarios[pos]}')
-                
-                # creo un nuevo usuario y lo registro en la misma posición del anterior
-                usuario_nuevo = crear_usuario()
-                if usuario_nuevo.edad >= 18: # si es mayor de edad
-                    
-                    # sustituyo el nuevo usuario en la posición correspondiente
-                    self.usuarios[pos] = usuario_nuevo
+        print(f'\nUsuario a actualizar: {self.usuarios[pos]}')
+        
+        # obtengo los nuevos datos y los almaceno en un diccionario
+        nuevos_datos = solicitar_nuevos_datos()
 
-                    formato = "%Y-%m-%d %H:%M:%S"
-                    # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
-                    fecha_actual = convertir_str_a_datetime(fecha.now().strftime(formato))
+        if nuevos_datos.get('edad') >= 18: # si es mayor de edad
+            
+            # actualizo los atributos
+            for atributo, valor in nuevos_datos.items():
+                setattr(self.usuarios[pos], atributo, valor)
 
-                    # función para adicionar información fichero actlog.txt, le paso la fecha actual
-                    archivo_texto.adicionar_info_actlog(usuario_nuevo, fecha_actual)
+            # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+            fecha_actual = convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
 
-                    # confirmo que el usuario se actualizo
-                    print(f'''
-                        el usuario se ha actualizado exitosamente:
-                        {self.usuarios[pos]}
+            # función para adicionar información fichero actlog.txt, le paso la fecha actual
+            archivo_texto.adicionar_info_actlog(self.usuarios[pos], fecha_actual)
+
+            # confirmo que el usuario se actualizo
+            print(f'''
+                    el usuario se ha actualizado exitosamente:
+                    {self.usuarios[pos]}
                     ''')
 
-                else:
-                    print(f'Tu edad es: {usuario_nuevo.edad}, debes ser mayor de edad para registrarte')
-                    
-            else: # el usuario aun no se registra
-                print(f'EL usuario con cédula: "{cedula_antigua}" no se encuentra registrado')
+        else:
+            print(f'Tu edad es: {nuevos_datos.get("edad")}, debes ser mayor de edad para registrarte')
 
 # _____________________________________________________________________________________
 
     def eliminar_usuario(self):
 
-        # si no hay usuarios registrados aún
-        if not self.usuarios:
-            print('\nNo se encuentra usuarios registrados')
-        else:
             # muestro los usuarios que están registrados hasta el momento
             self.mostrar_usuarios()
             
@@ -172,27 +173,21 @@ class Aerolinea:
             cedula = ingresar_cedula_valida()
             pos = self.encontrar_posicion_usuario(cedula)
 
-            # si está registrado
-            if pos != -1: 
-                print('\n-------- Usuario a Eliminar ----------')
-                print(self.usuarios[pos])
-                
-                # elimino el usuario en la posición correspondiente y recupero el usuario eliminado
-                usuario = self.usuarios.pop(pos)
+            print('\n-------- Usuario a Eliminar ----------')
+            print(self.usuarios[pos])
+            
+            # elimino el usuario en la posición correspondiente y recupero el usuario eliminado
+            usuario = self.usuarios.pop(pos)
 
-                # muestro el usuario eliminado de la lista de usuarios
-                print('\nEl siguiente usuario se eliminó exitosamente\n')
-                print(usuario)
-                
-                formato = "%Y-%m-%d %H:%M:%S"
-                # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
-                fecha_actual = convertir_str_a_datetime(fecha.now().strftime(formato))
+            # muestro el usuario eliminado de la lista de usuarios
+            print('\nEl siguiente usuario se eliminó exitosamente\n')
+            print(usuario)
+            
+            # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+            fecha_actual = convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
 
-                # función para adicionar información fichero elog.txt, le paso la fecha actual
-                archivo_texto.adicionar_info_elog(usuario, fecha_actual)
-
-            else: # el usuario aun no se registra
-                print(f'EL usuario con cédula: "{cedula}" no se encuentra registrado')
+            # función para adicionar información fichero elog.txt, le paso la fecha actual
+            archivo_texto.adicionar_info_elog(usuario, fecha_actual)
 
 # _____________________________________________________________________________________
 
@@ -254,44 +249,48 @@ def calcular_edad(fecha_nacimiento):
     
     return edad
 
+
 # _____________________________________________________________________________________
 
-# el siguiente método solo se encarga de crear un objeto usuario
-def crear_usuario() -> Usuario:
+# función para convertir de tipo str a datetime, formato: "%Y-%m-%d %H:%M:%S"
+def convertir_str_a_datetime(cadena_fecha_hora):
+    
+    # Convertir la cadena a un objeto datetime usando strptime
+    fecha_hora = fecha.strptime(cadena_fecha_hora, FECHA_FORMAT)
+    
+    return fecha_hora
 
-    print('\n------Usuario a Crear -------')
+# _____________________________________________________________________________________
+
+def solicitar_nuevos_datos() -> dict:
+
+    print('---------- Nuevos Datos ------------')
+    
     id = ingresar_cedula_valida()
     fecha_nacimiento = ingresar_fecha_nacimiento_valida()
     edad = calcular_edad(fecha_nacimiento)
     nombres = input('\nDime los nombres: ')
     apellidos = input('Dime los apellidos: ')
 
-    # creo objeto
-    usuario = Usuario(id,nombres, apellidos, fecha_nacimiento, edad)
-    return usuario
+    nuevos_atributos = {
+        'id': id,
+        'fecha_nacimiento': fecha_nacimiento,
+        'edad': edad,
+        'nombres':nombres,
+        'apellidos': apellidos
+    }
+
+    return nuevos_atributos
 
 # _____________________________________________________________________________________
-
-# función para convertir de tipo str a datetime, formato: "%Y-%m-%d %H:%M:%S"
-def convertir_str_a_datetime(cadena_fecha_hora):
-    # Definir el formato esperado de la cadena
-    formato = "%Y-%m-%d %H:%M:%S"
-    
-    # Convertir la cadena a un objeto datetime usando strptime
-    fecha_hora = fecha.strptime(cadena_fecha_hora, formato)
-    
-    return fecha_hora
-
-# _____________________________________________________________________________________
-
 # pruebas funciones 
 if __name__ == '__main__':
 
     pass
 
     #Creo objeto
-    usuario_1 = Usuario(id = 1, nombres = 'Camilo', apellidos = 'David', fecha_nacimiento='08-01-1999', edad=25)
-    usuario_2 = Usuario(id = 2, nombres = 'Felipe', apellidos = 'Cujar', fecha_nacimiento='05-09-1998', edad=25)
+    usuario_1 = Usuario(id = 1, nombres = 'Alex', apellidos = 'Guitar', fecha_nacimiento='18-01-1979', edad=45)
+    usuario_2 = Usuario(id = 2, nombres = 'Felipe', apellidos = 'Baterry', fecha_nacimiento='05-09-1998', edad=25)
     usuario_3 = Usuario(id = 3, nombres = 'Cuchito', apellidos= 'Cervecero', fecha_nacimiento='25-01-1964', edad=60)
 
     # fecha_nacimiento_str = '15-07-1990'
@@ -312,7 +311,7 @@ if __name__ == '__main__':
     # print(aerolinea.buscar_usuario(3))
 
     # registro usuario
-    # aerolinea.registrar_usuario()
+    aerolinea.registrar_usuario()
 
     # actualizar usuario
     aerolinea.actualizar_usuario()

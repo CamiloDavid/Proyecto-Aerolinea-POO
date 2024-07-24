@@ -3,6 +3,7 @@
 from datetime import datetime as fecha, date
 # _____________________________________________________________________________________
 
+
 class Usuario:
 # _____________________________________________________________________________________
 
@@ -27,30 +28,25 @@ class Usuario:
 
 # _____________________________________________________________________________________
 
-    # método __str__()
-    def __str__(self) -> str:
+    # método __str__(), uso validación para imprimir en consola si el vuelo se ha adquirido imprimirlo
+    # de lo contrario imprimir "Aún no adquirido"
 
-        if self.vuelo != None:
-            return f'''
-                    ---------- Usuario ----------
-                    id = {self.__id}
-                    nombres = {self.__nombres}
-                    apellidos = {self.__apellidos}
-                    fecha nacimiento = {self.__fecha_nacimiento}
-                    edad = {self.__edad}
-                    {self.__vuelo}
-                    '''
-        else:
-            return f'''
-                    ---------- Usuario ----------
-                    id = {self.__id}
-                    nombres = {self.__nombres}
-                    apellidos = {self.__apellidos}
-                    fecha nacimiento = {self.__fecha_nacimiento}
-                    edad = {self.__edad}
-                    vuelo = Aún no adquirido
-                    ''' 
-        
+    def __str__(self) -> str:
+        usuario_info = {
+            "id": self.__id,
+            "nombres": self.__nombres,
+            "apellidos": self.__apellidos,
+            "fecha nacimiento": self.__fecha_nacimiento,
+            "edad": self.__edad,
+            "vuelo": self.__vuelo if self.__vuelo is not None else "Aún no adquirido"
+        }
+
+        return "\n".join([
+            "\n---------- Usuario ----------",
+            # por cada key-value, imprimir cada par
+            *[f"{key} = {value}" for key, value in usuario_info.items()],
+            ""
+        ])
 # _____________________________________________________________________________________
 
     # métodos get y set()
