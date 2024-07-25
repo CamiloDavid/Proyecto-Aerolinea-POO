@@ -79,11 +79,23 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
+
+    # función averiguar_vuelos_usuarios, devuelve True si hay al menos un vuelo adquirido, de lo contrario False
+    def averiguar_vuelos_usuarios(self) -> bool:
+        
+        for usuario in self.usuarios:
+            if usuario.vuelo != None:
+                return True
+
+        # en caso de que todos los vuelos de los usuarios fueron None, retorno False
+        return False
+
+# _____________________________________________________________________________________
     # función para consultar un usuario
-    def mostrar_usuario(self):
+    def mostrar_usuario(self, cedula):
 
         print('\n-------- Usuario a Buscar---------')
-        cedula = globalfunc.ingresar_cedula_valida()
+
         usuario = self.buscar_usuario(cedula)
         if usuario != None:
             print(f'\nUsuario encontrado: {usuario}')
@@ -128,16 +140,10 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
-    def actualizar_usuario(self):
+    def actualizar_usuario(self, cedula_antigua):
 
         print('\n -------- Proceso de actualización de Usuario ----------')
         
-
-        # muestro los usuarios que están registrados hasta el momento
-        self.mostrar_usuarios()
-            
-        print('\nIngrese la cédula con que aparece registrado: ')
-        cedula_antigua = globalfunc.ingresar_cedula_valida()
         pos = self.encontrar_posicion_usuario(cedula_antigua)
 
         print(f'\nUsuario a actualizar: {self.usuarios[pos]}')
@@ -168,13 +174,11 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
-    def eliminar_usuario(self):
+    def eliminar_usuario(self, cedula):
 
             # muestro los usuarios que están registrados hasta el momento
             self.mostrar_usuarios()
-            
-            print('\nIngrese la cédula del usuario a eliminar: ')
-            cedula = globalfunc.ingresar_cedula_valida()
+
             pos = self.encontrar_posicion_usuario(cedula)
 
             print('\n-------- Usuario a Eliminar ----------')
@@ -224,12 +228,9 @@ class Aerolinea:
 
     # la siguiente función se llamará si el usuario ya estaba registrado, 
     # por tanto no necesito validar si el usuario no existe, o si el usuario ya tenía vuelos
-    def comprar_tiquete(self):
+    def comprar_tiquete(self, cedula):
 
         print('\n---------- Proceso de Compra de Tiquete -----------')
-        
-        #pido la cedula
-        cedula = globalfunc.ingresar_cedula_valida()
 
         # consigo el correspondiente usuario
         usuario = self.buscar_usuario(cedula)
@@ -257,15 +258,13 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
-    def actualizar_vuelo(self):
+    def actualizar_vuelo(self, cedula_antigua):
 
         print('\n -------- Proceso de actualización de Vuelo ----------')
         
         # muestro los usuarios que están registrados hasta el momento
         self.mostrar_usuarios()
             
-        print('\nIngrese la cédula con que aparece registrado: ')
-        cedula_antigua = globalfunc.ingresar_cedula_valida()
         pos = self.encontrar_posicion_usuario(cedula_antigua)
 
         # obtengo el vuelo correspondiente
@@ -294,17 +293,15 @@ class Aerolinea:
 # _____________________________________________________________________________________
 
 
-    def eliminar_vuelo(self):
+    def eliminar_vuelo(self, cedula):
 
         print('\n -------- Proceso de eliminación de Vuelo ----------')
         
         # muestro los usuarios que están registrados hasta el momento
         self.mostrar_usuarios()
-            
-        print('\nIngrese la cédula del usuario con el vuelo a eliminar: ')
-        cedula = globalfunc.ingresar_cedula_valida()
-        pos = self.encontrar_posicion_usuario(cedula)
 
+        pos = self.encontrar_posicion_usuario(cedula)
+        
         # obtengo el vuelo correspondiente
         vuelo = self.usuarios[pos].vuelo
 
@@ -324,6 +321,17 @@ class Aerolinea:
             el vuelo se ha eliminado exitosamente:
             {self.usuarios[pos]}
             ''')
+
+# _____________________________________________________________________________________
+
+# función para consultar un vuelo, se asimila que la cedula si es de un usuario registrado
+    def mostrar_vuelo(self, cedula):
+
+        print('\n-------- Vuelo a Buscar---------')
+
+        usuario = self.buscar_usuario(cedula)
+
+        print(f'\nVuelo encontrado: {usuario.vuelo}')
 
 # _____________________________________________________________________________________
 
