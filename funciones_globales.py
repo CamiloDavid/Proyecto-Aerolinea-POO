@@ -170,7 +170,7 @@ def asignar_precio_vuelo(clase) -> int:
         # asigno el precio correspondiente
         precio = 150000
     # si eligio la clase alta
-    elif clase == 'alta':
+    elif clase == 'Alta':
         precio = 300000
     else:
         precio = 150000

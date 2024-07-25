@@ -164,7 +164,7 @@ class Aerolinea:
                     ''')
 
         else:
-            print(f'Tu edad es: {nuevos_datos.get("edad")}, debes ser mayor de edad para registrarte')
+            print(f'Tu edad es: {nuevos_datos.get("edad")}, debes ser mayor de edad para actualizarte')
 
 # _____________________________________________________________________________________
 
@@ -257,6 +257,76 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
+    def actualizar_vuelo(self):
+
+        print('\n -------- Proceso de actualización de Vuelo ----------')
+        
+        # muestro los usuarios que están registrados hasta el momento
+        self.mostrar_usuarios()
+            
+        print('\nIngrese la cédula con que aparece registrado: ')
+        cedula_antigua = globalfunc.ingresar_cedula_valida()
+        pos = self.encontrar_posicion_usuario(cedula_antigua)
+
+        # obtengo el vuelo correspondiente
+        vuelo = self.usuarios[pos].vuelo
+
+        print(f'Vuelo a actualizar: {vuelo}')
+        print('\n----------- Nuevos datos a ingresar -------------')
+        
+        # solo se permite cambiar la clase de tiquete y el valor del tiquete
+        nueva_clase = globalfunc.elegir_clase_tiquete()
+        vuelo.clase = nueva_clase
+        vuelo.precio = globalfunc.asignar_precio_vuelo(nueva_clase)
+
+        # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+        fecha_actual = globalfunc.convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
+
+        # función para adicionar información fichero acttiqlog.txt, le paso la fecha actual
+        archivo_texto.adicionar_info_acttiqlog(self.usuarios[pos], fecha_actual)
+
+        # confirmo que el usuario se actualizo
+        print(f'''
+            el vuelo se ha actualizado exitosamente:
+            {self.usuarios[pos].vuelo}
+                ''')
+
+# _____________________________________________________________________________________
+
+
+    def eliminar_vuelo(self):
+
+        print('\n -------- Proceso de eliminación de Vuelo ----------')
+        
+        # muestro los usuarios que están registrados hasta el momento
+        self.mostrar_usuarios()
+            
+        print('\nIngrese la cédula del usuario con el vuelo a eliminar: ')
+        cedula = globalfunc.ingresar_cedula_valida()
+        pos = self.encontrar_posicion_usuario(cedula)
+
+        # obtengo el vuelo correspondiente
+        vuelo = self.usuarios[pos].vuelo
+
+        print(f'Vuelo a eliminar: {vuelo}')
+
+        # reinicio el atributo vuelo como None
+        self.usuarios[pos].vuelo = None
+
+        # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+        fecha_actual = globalfunc.convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
+
+        # función para adicionar información fichero etiqlog.txt, le paso la fecha actual
+        archivo_texto.adicionar_info_etiqlog(self.usuarios[pos], vuelo, fecha_actual)
+
+        # confirmo que el vuelo se eliminó
+        print(f'''
+            el vuelo se ha eliminado exitosamente:
+            {self.usuarios[pos]}
+            ''')
+
+# _____________________________________________________________________________________
+
 # pruebas funciones 
 if __name__ == '__main__':
 
@@ -289,6 +359,12 @@ if __name__ == '__main__':
 
     # adquirir vuelo para un usuario
     aerolinea.comprar_tiquete()
+
+    # elimino vuelo
+    aerolinea.eliminar_vuelo()
+
+    # actualizar vuelo
+    aerolinea.actualizar_vuelo()
 
     # actualizar usuario
     aerolinea.actualizar_usuario()
