@@ -44,16 +44,17 @@ def adicionar_info_elog(usuario, fecha_eliminacion):
 
 # _____________________________________________________________________________________
 
-# def adicionar_info_vtatlog(usuario, fecha_compra_tiquete):
+def adicionar_info_vtatlog(usuario, fecha_compra_tiquete):
 
-#     try:
-#     # Abrir el archivo en modo append ('a')
-#         with open('elog.txt', 'a', encoding='utf8') as file:
-#             # Escribir la línea en el archivo
-#             # file.write(f"""\nusuario: (cedula: {cedula}, Nombres: {nombres}, Apellidos: {apellidos}),
-#             # Vuelo : (clase: {clase}, precio: {precio}, fecha compra: {fecha_compra_tiquete}, fecha vuelo: {fecha_vuelo}, destino: {destino})""")
-#         print("Información de usuario agregada a vtatlog.txt")
-#     except IOError as e:
-#         print(f"Error al abrir o escribir en el archivo: {e}")
-#     except Exception as e:
-#         print(f"Se produjo un error inesperado: {e}")
+    try:
+    # Abrir el archivo en modo append ('a')
+        with open('vtatlog.txt', 'a', encoding='utf8') as file:
+            # Escribir la línea en el archivo
+            file.write(f"""\nusuario: (cedula: {usuario.id}, {usuario.nombres}, {usuario.apellidos}),
+            Vuelo : (clase: {usuario.vuelo.clase}, precio: {usuario.vuelo.precio}, fecha compra: {fecha_compra_tiquete}, 
+            fecha vuelo: {usuario.vuelo.fecha_vuelo}, destino: {usuario.vuelo.destino})""")
+        print("Información de usuario agregada a vtatlog.txt")
+    except IOError as e:
+        print(f"Error al abrir o escribir en el archivo: {e}")
+    except Exception as e:
+        print(f"Se produjo un error inesperado: {e}")

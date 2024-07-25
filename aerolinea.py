@@ -130,6 +130,9 @@ class Aerolinea:
 
     def actualizar_usuario(self):
 
+        print('\n -------- Proceso de actualización de Usuario ----------')
+        
+
         # muestro los usuarios que están registrados hasta el momento
         self.mostrar_usuarios()
             
@@ -192,6 +195,67 @@ class Aerolinea:
 
 # _____________________________________________________________________________________
 
+    # Funciones para los vuelos
+
+    # Función para crear un objeto tipo vuelo
+
+    def crear_vuelo(self):
+        
+        # llamo a la funcion elegir_clase_tiquete
+        clase = globalfunc.elegir_clase_tiquete()
+
+        # llamo a la función elegir_destino_vuelo
+        destino = globalfunc.elegir_destino_vuelo()
+
+        # llamo a la función asignar precio vuelo
+        precio = globalfunc.asignar_precio_vuelo(clase)
+
+        # obtengo la fecha de la compra del tiquete, devuelve un objeto tipo Date
+        fecha_compra_tiquete = fecha.now().date()
+
+        # obtengo la fecha del vuelo
+        fecha_vuelo = globalfunc.elegir_fecha_vuelo(fecha_compra_tiquete)
+
+        vuelo = Vuelo(destino, precio, clase, fecha_vuelo)
+
+        return vuelo
+
+# _____________________________________________________________________________________
+
+    # la siguiente función se llamará si el usuario ya estaba registrado, 
+    # por tanto no necesito validar si el usuario no existe, o si el usuario ya tenía vuelos
+    def comprar_tiquete(self):
+
+        print('\n---------- Proceso de Compra de Tiquete -----------')
+        
+        #pido la cedula
+        cedula = globalfunc.ingresar_cedula_valida()
+
+        # consigo el correspondiente usuario
+        usuario = self.buscar_usuario(cedula)
+
+        # muestro los detalles del usuario
+        print(usuario)
+        
+        # creo objeto vuelo, y le asigno los atributos
+        vuelo = self.crear_vuelo()
+
+        # inicializo el atributo vuelo, del correspondiente usuario con el vuelo creado
+        usuario.vuelo = vuelo
+
+        # obtengo la fecha actual, año, mes, dia, hora, minuto, segundo, y la convierto a tipo datetime
+        fecha_actual = globalfunc.convertir_str_a_datetime(fecha.now().strftime(FECHA_FORMAT))
+
+        # muestro los detalles del usuario, ya con el vuelo adquirido
+        print(f'\nEl usuario con id: {usuario.id}, adquirió exitosamente el vuelo')
+        
+        print(usuario)
+
+        # adiciono la compra del vuelo al archivo de texto 
+        archivo_texto.adicionar_info_vtatlog(usuario, fecha_actual)
+
+
+# _____________________________________________________________________________________
 
 # pruebas funciones 
 if __name__ == '__main__':
@@ -221,13 +285,16 @@ if __name__ == '__main__':
     # print(aerolinea.buscar_usuario(3))
 
     # registro usuario
-    aerolinea.registrar_usuario()
+    # aerolinea.registrar_usuario()
+
+    # adquirir vuelo para un usuario
+    aerolinea.comprar_tiquete()
 
     # actualizar usuario
     aerolinea.actualizar_usuario()
     
     # eliminar usuario
-    aerolinea.eliminar_usuario()
+    # aerolinea.eliminar_usuario()
 
     # buscar usuario
     # aerolinea.mostrar_usuario()

@@ -1,6 +1,7 @@
 
 # importo datetime para las fechas
 from datetime import datetime as fecha, date
+from uuid import uuid4 # de la librería uuid importo el método uuid4, para asignar códigos
 # _____________________________________________________________________________________
 
 # Definimos la constante para el formato de fecha al inicio del archivo
@@ -10,8 +11,8 @@ FECHA_FORMAT = "%d-%m-%Y"
 class Vuelo:
 
     # método constructor
-    def __init__(self, codigo, destino, precio, clase, fecha_vuelo):
-        self.__codigo = codigo
+    def __init__(self, destino, precio, clase, fecha_vuelo):
+        self.__codigo = str(uuid4()) # convierto el código a tipo string
         self.__destino = destino
         self.__precio = precio
         self.__clase = clase

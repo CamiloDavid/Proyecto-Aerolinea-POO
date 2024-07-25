@@ -101,3 +101,100 @@ def solicitar_nuevos_datos() -> dict:
     return nuevos_atributos
 
 # _____________________________________________________________________________________
+
+def elegir_clase_tiquete():
+
+    while True:
+        print('''
+        ------ Clases de Tiquete -----
+        1. Clase Baja: 150000 pesos
+        2. Clase ALta: 300000 pesos
+        ------------------------------
+        ''')
+
+        try:
+            opc = int(input('Ingresa una opción (1 o 2): '))
+            if opc == 1:
+                return 'Baja'
+            elif opc == 2:
+                return 'Alta'
+            else:
+                print('Ingresaste un valor distinto de 1 o 2')
+        except ValueError as e:
+            print(f'error: {e}, ingresaste un valor no entero, vuelve a intentarlo')
+
+# _____________________________________________________________________________________
+
+# función para elegir el destino
+def elegir_destino_vuelo() -> str:
+
+    destino = None
+
+    while True:
+        print('''
+        ------ Destinos de Vuelo -----
+        1. Bogotá
+        2. Cali
+        3. Medellin
+        4. Pereira
+        5. Cartagena
+        ------------------------------
+        ''')
+
+        try:
+            opc = int(input('Ingresa una opción (1-5): '))
+            if opc == 1:
+                destino = 'Bogota'
+            elif opc == 2:
+                destino = 'Cali'
+            elif opc == 3:
+                destino = 'Medellin'
+            elif opc == 4:
+                destino = 'Pereira'
+            elif opc == 5:
+                destino = 'Cartagena'
+            else:
+                print('Ingresaste una opción inválida, vuelve a intentarlo')
+        except ValueError as e:
+            print(f'error: {e}, ingresaste un valor no entero, vuelve a intentarlo')
+
+        if destino != None:
+            return destino
+
+# _____________________________________________________________________________________
+
+def asignar_precio_vuelo(clase) -> int:
+
+    # si eligio la clase baja
+    if clase == 'Baja':
+        # asigno el precio correspondiente
+        precio = 150000
+    # si eligio la clase alta
+    elif clase == 'alta':
+        precio = 300000
+    else:
+        precio = 150000
+        
+    return precio
+
+# _____________________________________________________________________________________
+
+# el argumento que recibe es un objeto tipo Date
+def elegir_fecha_vuelo(fecha_compra_tiquete):
+
+    # la única forma que rompa el bucle es que la fecha tenga un formato correcto, y una fecha posterior al de la compra
+    while True:
+        fecha_vuelo = input('Dime la fecha del vuelo con el siguiente formato (dia-mes-año): ')
+        try:
+            #convertir la cadena a un objeto de fecha con el formato dado
+            fecha_valida = fecha.strptime(fecha_vuelo, FECHA_FORMAT_2)
+
+            # Comprobar si la fecha ingresada es mayor que la fecha de la compra del tiquete
+            if fecha_valida.date() > fecha_compra_tiquete:
+                return fecha_vuelo # retorno la fecha
+            else: 
+                print(f'Error, la fecha: {fecha_vuelo} es una fecha igual o anterior a la fecha de la compra del tiquete')
+            
+        except ValueError as e:
+            # Si ocurre un ValueError, la fecha no es válida
+            print(f'Error, la fecha: {fecha_vuelo}, no tiene el formato correcto o es una fecha inválida')
