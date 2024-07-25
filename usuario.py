@@ -80,7 +80,13 @@ class Usuario:
     
     @fecha_nacimiento.setter
     def fecha_nacimiento(self, fecha_nacimiento):
-        self.__fecha_nacimiento = fecha_nacimiento
+        if isinstance(fecha_nacimiento, str):
+            self.__fecha_nacimiento = fecha.strptime(fecha_nacimiento, "%d-%m-%Y").date()
+        # si es de tipo datetime, no hago ninguna conversión 
+        elif isinstance(fecha_nacimiento, date):
+            self.__fecha_nacimiento = fecha_nacimiento
+        else:
+            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
 
     @property
     def edad(self):
