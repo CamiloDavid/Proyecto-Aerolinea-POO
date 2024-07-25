@@ -3,6 +3,10 @@
 from datetime import datetime as fecha, date
 # _____________________________________________________________________________________
 
+# Definimos la constante para el formato de fecha al inicio del archivo
+FECHA_FORMAT = "%d-%m-%Y"
+# _____________________________________________________________________________________
+
 class Vuelo:
 
     # método constructor
@@ -11,16 +15,7 @@ class Vuelo:
         self.__destino = destino
         self.__precio = precio
         self.__clase = clase
-
-        # para el atributo fecha_vuelo, pueden ocurrir 2 casos:
-        # sea de tipo str, convierto tipo str a tipo datetime
-        if isinstance(fecha_vuelo, str):
-            self.__fecha_vuelo = fecha.strptime(fecha_vuelo, "%d-%m-%Y").date()
-        # si es de tipo datetime, no hago ninguna conversión 
-        elif isinstance(fecha_vuelo, date):
-            self.__fecha_vuelo = fecha_vuelo
-        else:
-            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
+        self.fecha_vuelo = fecha_vuelo  # Usamos el setter aquí, ya que tiene las validaciones
 
 # _____________________________________________________________________________________
 
@@ -75,13 +70,14 @@ class Vuelo:
 
     @fecha_vuelo.setter
     def fecha_vuelo(self, fecha_vuelo):
-
         if isinstance(fecha_vuelo, str):
-            self.__fecha_vuelo = fecha.strptime(fecha_vuelo, "%d-%m-%Y").date()
-        # si es de tipo datetime, no hago ninguna conversión 
+            try:
+                self.__fecha_vuelo = fecha.strptime(fecha_vuelo, FECHA_FORMAT).date()
+            except ValueError:
+                raise ValueError(f"El formato de fecha debe ser '{FECHA_FORMAT}'")
         elif isinstance(fecha_vuelo, date):
             self.__fecha_vuelo = fecha_vuelo
         else:
-            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
+            raise ValueError(f"fecha_vuelo debe ser una cadena en formato '{FECHA_FORMAT}' o un objeto de tipo date")
 
     # método destructor no es necesario definirlo

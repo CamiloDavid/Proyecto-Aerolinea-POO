@@ -3,6 +3,9 @@
 from datetime import datetime as fecha, date
 # _____________________________________________________________________________________
 
+# Definimos la constante para el formato de fecha al inicio del archivo
+FECHA_FORMAT = "%d-%m-%Y"
+# _____________________________________________________________________________________
 
 class Usuario:
 # _____________________________________________________________________________________
@@ -12,17 +15,7 @@ class Usuario:
         self.__id = id
         self.__nombres = nombres
         self.__apellidos = apellidos
-
-        # para el atributo fecha_nacimiento, pueden ocurrir 2 casos:
-        # sea de tipo str, convierto tipo str a tipo datetime
-        if isinstance(fecha_nacimiento, str):
-            self.__fecha_nacimiento = fecha.strptime(fecha_nacimiento, "%d-%m-%Y").date()
-        # si es de tipo datetime, no hago ninguna conversión 
-        elif isinstance(fecha_nacimiento, date):
-            self.__fecha_nacimiento = fecha_nacimiento
-        else:
-            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
-        
+        self.fecha_nacimiento = fecha_nacimiento  # Usamos el setter aquí, ya que tiene las validaciones
         self.__edad = edad
         self.__vuelo = None
 
@@ -36,7 +29,7 @@ class Usuario:
             "id": self.__id,
             "nombres": self.__nombres,
             "apellidos": self.__apellidos,
-            "fecha nacimiento": self.__fecha_nacimiento,
+            "fecha nacimiento": self.__fecha_nacimiento.strftime(FECHA_FORMAT),
             "edad": self.__edad,
             "vuelo": self.__vuelo if self.__vuelo is not None else "Aún no adquirido"
         }
@@ -81,12 +74,14 @@ class Usuario:
     @fecha_nacimiento.setter
     def fecha_nacimiento(self, fecha_nacimiento):
         if isinstance(fecha_nacimiento, str):
-            self.__fecha_nacimiento = fecha.strptime(fecha_nacimiento, "%d-%m-%Y").date()
-        # si es de tipo datetime, no hago ninguna conversión 
+            try:
+                self.__fecha_nacimiento = fecha.strptime(fecha_nacimiento, FECHA_FORMAT).date()
+            except ValueError:
+                raise ValueError(f"El formato de fecha debe ser '{FECHA_FORMAT}'")
         elif isinstance(fecha_nacimiento, date):
             self.__fecha_nacimiento = fecha_nacimiento
         else:
-            raise ValueError("fecha_nacimiento debe ser una cadena en formato 'dd-mm-yyyy' o un objeto de tipo date")
+            raise ValueError(f"fecha_nacimiento debe ser una cadena en formato '{FECHA_FORMAT}' o un objeto de tipo date")
 
     @property
     def edad(self):
